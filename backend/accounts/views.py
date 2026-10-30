@@ -12,9 +12,8 @@ from rest_framework_simplejwt.exceptions import TokenError
 
 from .serializers import (RegisterSerializer,PublicUserSerializer,MyProfileSerializer,LoginSerializer)
 
-# Create your views here.
-
 User = get_user_model()
+# Create your views here.
 
 class RegisterAPIView(APIView):
     permission_classes=[AllowAny]
@@ -81,4 +80,3 @@ class LogoutAPIView(APIView):
         
         except TokenError:
             return Response({"detail": "Invalid or expired refresh token."},status=status.HTTP_400_BAD_REQUEST)
-        
