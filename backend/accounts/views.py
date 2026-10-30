@@ -42,4 +42,20 @@ class LoginAPIView(APIView):
             },status=status.HTTP_200_OK)
         
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+class MyProfileAPIView(APIView):
+    permission_classes=[IsAuthenticated]
+    parser_classes = [MultiPartParser,FormParser,JSONParser]
+    
+    def get(self,request):
+        serializer = MyProfileSerializer(request.user)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+    
+    def patch(self,request):
+        serializer = MyProfileSerializer(request.user,data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
         
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
