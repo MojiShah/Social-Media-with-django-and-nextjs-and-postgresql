@@ -65,3 +65,20 @@ class PublicUserProfileAPIView(APIView):
         user = get_object_or_404(user,username__iexact=username,is_active=True)
         serializer = PublicUserSerializer(user)
         return Response(serializer.data,status=status.HTTP_200_OK)
+    
+class LogoutAPIView(APIView):
+    permission_classes=[IsAuthenticated]
+    def post(self,request):
+        refresh_token = request.data.get("refresh")
+        
+        if not refresh_token:
+            return Response({"detail": "Refresh token is required."},status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({"detail": "Successfully logged out."},status=status.HTTP_200_OK)
+        
+        except TokenError:
+            return Response({"detail": "Invalid or expired refresh token."},status=status.HTTP_400_BAD_REQUEST)
+        
